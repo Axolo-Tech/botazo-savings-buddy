@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import botazoLogo from "@/assets/botazo-logo.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface BotazoAvatarProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -34,6 +34,30 @@ const pushMessages = [
   "Recuerda canjear tus BOTazo Points ⚡",
 ];
 
+// Typewriter hook
+const useTypewriter = (text: string, speed = 30) => {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    if (!text) return;
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        setDone(true);
+        clearInterval(interval);
+      }
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return { displayed, done };
+};
+
 const BotazoAvatar = ({
   size = "md",
   animate = true,
@@ -44,6 +68,7 @@ const BotazoAvatar = ({
   const [currentMessage, setCurrentMessage] = useState(bubbleText || pushMessages[0]);
   const [messageIndex, setMessageIndex] = useState(0);
   const [showMsg, setShowMsg] = useState(showBubble);
+  const { displayed: typedText } = useTypewriter(showMsg ? currentMessage : "");
 
   useEffect(() => {
     if (!showBubble) return;
@@ -91,7 +116,6 @@ const BotazoAvatar = ({
 
   return (
     <div className={`${sizeMap[size]} relative flex-shrink-0`}>
-      {/* Pulse glow behind avatar */}
       {animate && mood === "thinking" && (
         <motion.div
           className="absolute inset-0 rounded-full bg-primary/20 blur-xl"
@@ -107,7 +131,7 @@ const BotazoAvatar = ({
         />
       )}
 
-      {/* Chat bubble */}
+      {/* Chat bubble with typewriter */}
       <AnimatePresence>
         {showMsg && (showBubble || bubbleText) && (
           <motion.div
@@ -116,7 +140,8 @@ const BotazoAvatar = ({
             exit={{ opacity: 0, scale: 0.7, y: 5 }}
             className={`absolute left-1/2 -translate-x-1/2 ${bubbleSizeMap[size]} bg-card border border-border rounded-lg px-2 py-1 shadow-lg z-10 text-center font-semibold text-foreground`}
           >
-            {currentMessage}
+            {typedText}
+            <span className="inline-block w-[2px] h-[1em] bg-primary ml-[1px] animate-pulse align-middle" />
             <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-card border-r border-b border-border rotate-45" />
           </motion.div>
         )}

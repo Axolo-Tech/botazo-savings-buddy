@@ -13,22 +13,27 @@ const cycles = [
 
 const Dashboard = () => {
   const { ensName } = useENS();
-  const displayName = ensName || "usuario.monad.eth";
+  const displayName = ensName || "";
+  const greeting = displayName
+    ? `Hola, ${displayName}, hoy tu BOTazo está activo`
+    : "¡Bienvenido de vuelta!";
 
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="gradient-botazo px-5 pt-6 pb-8 rounded-b-3xl">
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-primary-foreground/70 text-xs font-semibold">{displayName}</p>
-          <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
-            <Star size={14} className="text-accent" />
+        {displayName && (
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-primary-foreground/70 text-xs font-semibold">{displayName}</p>
+            <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
+              <Star size={14} className="text-accent" />
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex items-center gap-3">
-          <BotazoAvatar size="sm" mood="happy" showBubble bubbleText={`¡Hola ${displayName.split('.')[0]}! 👋`} />
+          <BotazoAvatar size="sm" mood="happy" showBubble bubbleText={greeting} />
           <div>
-            <h1 className="text-primary-foreground font-extrabold text-lg">¡Hola! Soy BOTazo 🤖</h1>
-            <p className="text-primary-foreground/70 text-xs font-semibold">Tu agente de ahorro en Monad</p>
+            <h1 className="text-primary-foreground font-extrabold text-lg">¡Soy BOTazo! 🤖</h1>
+            <p className="text-primary-foreground/70 text-xs font-semibold">Tu agente de ahorro inteligente</p>
           </div>
         </div>
       </div>
@@ -77,7 +82,7 @@ const Dashboard = () => {
           transition={{ delay: 0.7 }}
           className="bg-card rounded-2xl p-4 shadow-lg border border-border"
         >
-          <h2 className="text-base font-extrabold text-foreground mb-2">Tus BOTazo Points</h2>
+          <h2 className="text-base font-extrabold text-foreground mb-2">Saldo BOTazo</h2>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <BotazoAvatar size="sm" mood="happy" animate={false} />
