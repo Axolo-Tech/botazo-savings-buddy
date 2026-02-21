@@ -3,6 +3,7 @@ import AlertBanner from "@/components/AlertBanner";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
 import { ChevronRight, Plane, Car, BookOpen, Star } from "lucide-react";
+import { useENS } from "@/hooks/useENS";
 
 const cycles = [
   { icon: Plane, label: "Viajes a Monterrey", detail: "Cada 2 meses", color: "bg-primary/10 text-primary" },
@@ -11,18 +12,20 @@ const cycles = [
 ];
 
 const Dashboard = () => {
+  const { ensName } = useENS();
+  const displayName = ensName || "usuario.monad.eth";
+
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
       <div className="gradient-botazo px-5 pt-6 pb-8 rounded-b-3xl">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-primary-foreground/70 text-xs font-semibold">usuario.monad.eth</p>
+          <p className="text-primary-foreground/70 text-xs font-semibold">{displayName}</p>
           <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
             <Star size={14} className="text-accent" />
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <BotazoAvatar size="sm" mood="happy" />
+          <BotazoAvatar size="sm" mood="happy" showBubble bubbleText={`¡Hola ${displayName.split('.')[0]}! 👋`} />
           <div>
             <h1 className="text-primary-foreground font-extrabold text-lg">¡Hola! Soy BOTazo 🤖</h1>
             <p className="text-primary-foreground/70 text-xs font-semibold">Tu agente de ahorro en Monad</p>
@@ -31,7 +34,6 @@ const Dashboard = () => {
       </div>
 
       <div className="px-5 -mt-4 space-y-5">
-        {/* Alert Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +43,6 @@ const Dashboard = () => {
           <AlertBanner />
         </motion.div>
 
-        {/* Consumption Cycles */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -70,7 +71,6 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {/* BOTazo Points */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
