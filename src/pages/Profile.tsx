@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 import { MapPin, Shield, LogOut, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useENS } from "@/hooks/useENS";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { ensName, logout } = useENS();
   const [location, setLocation] = useState<string>("Obteniendo ubicación...");
+  const displayName = ensName || "usuario.monad.eth";
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -22,11 +25,16 @@ const Profile = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="gradient-botazo px-5 pt-6 pb-8 rounded-b-3xl flex flex-col items-center">
-        <BotazoAvatar size="lg" mood="happy" />
-        <h1 className="text-primary-foreground font-extrabold text-lg mt-3">usuario.monad.eth</h1>
+        <BotazoAvatar size="lg" mood="happy" showBubble bubbleText={`¡${displayName.split('.')[0]}! 💚`} />
+        <h1 className="text-primary-foreground font-extrabold text-lg mt-3">{displayName}</h1>
         <p className="text-primary-foreground/60 text-xs font-semibold">0x7a3f...e9b2</p>
       </div>
 
@@ -63,7 +71,7 @@ const Profile = () => {
           transition={{ delay: 0.15 }}
         >
           <button
-            onClick={() => navigate("/")}
+            onClick={handleLogout}
             className="w-full bg-destructive/10 text-destructive rounded-xl p-4 flex items-center gap-3 font-bold text-sm active:scale-[0.98] transition-transform"
           >
             <LogOut size={18} />
