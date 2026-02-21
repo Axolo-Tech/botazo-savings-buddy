@@ -7,16 +7,82 @@ import LaserScanOverlay from "@/components/LaserScanOverlay";
 
 type ScanState = "idle" | "camera" | "scanning" | "analyzing" | "done";
 
-const mockResult = {
-  store: "Soriana - Sucursal Centro",
-  total: "$850.00 MXN",
-  items: [
-    { name: "Leche Entera 1L", price: "$32.50" },
-    { name: "Huevos (12 pzas)", price: "$58.90" },
-    { name: "Pan Integral", price: "$45.00" },
-  ],
-  pointsEarned: 25,
-};
+const mockResults = [
+  {
+    store: "Soriana - Sucursal Centro",
+    total: "$850.00 MXN",
+    items: [
+      { name: "Leche Entera 1L", price: "$32.50" },
+      { name: "Huevos (12 pzas)", price: "$58.90" },
+      { name: "Pan Integral", price: "$45.00" },
+      { name: "Aceite de Oliva 500ml", price: "$89.00" },
+      { name: "Arroz 1kg", price: "$28.50" },
+    ],
+    pointsEarned: 25,
+  },
+  {
+    store: "OXXO - Av. Universidad",
+    total: "$237.00 MXN",
+    items: [
+      { name: "Café Andatti Grande", price: "$35.00" },
+      { name: "Sandwich Jamón", price: "$52.00" },
+      { name: "Agua Natural 1L", price: "$18.00" },
+      { name: "Galletas Marías", price: "$22.00" },
+      { name: "Recarga Telcel $100", price: "$110.00" },
+    ],
+    pointsEarned: 12,
+  },
+  {
+    store: "Walmart - Plaza Sendero",
+    total: "$1,430.50 MXN",
+    items: [
+      { name: "Detergente Ariel 5kg", price: "$189.00" },
+      { name: "Papel Higiénico 12 rollos", price: "$95.00" },
+      { name: "Cereal Zucaritas 820g", price: "$78.50" },
+      { name: "Carne Molida 1kg", price: "$165.00" },
+      { name: "Frutas y Verduras", price: "$230.00" },
+    ],
+    pointsEarned: 42,
+  },
+  {
+    store: "Farmacia Guadalajara - Centro",
+    total: "$612.00 MXN",
+    items: [
+      { name: "Paracetamol 500mg", price: "$45.00" },
+      { name: "Vitamina C efervescente", price: "$89.00" },
+      { name: "Bloqueador Solar SPF50", price: "$215.00" },
+      { name: "Shampoo Head & Shoulders", price: "$128.00" },
+      { name: "Curitas (caja 30)", price: "$35.00" },
+    ],
+    pointsEarned: 18,
+  },
+  {
+    store: "Costco - Periférico Sur",
+    total: "$3,280.00 MXN",
+    items: [
+      { name: "Pack Agua Kirkland 40pz", price: "$145.00" },
+      { name: "Pollo Rostizado", price: "$189.00" },
+      { name: "Toallas Kirkland 6 rollos", price: "$285.00" },
+      { name: "Pizza Pepperoni familiar", price: "$199.00" },
+      { name: "Aceite de Coco orgánico", price: "$349.00" },
+    ],
+    pointsEarned: 65,
+  },
+  {
+    store: "La Comer - Insurgentes",
+    total: "$975.30 MXN",
+    items: [
+      { name: "Salmón fresco 500g", price: "$245.00" },
+      { name: "Aguacate Hass (3 pzas)", price: "$75.00" },
+      { name: "Queso Manchego 400g", price: "$120.00" },
+      { name: "Vino Tinto L.A. Cetto", price: "$189.00" },
+      { name: "Pan artesanal", price: "$65.00" },
+    ],
+    pointsEarned: 30,
+  },
+];
+
+const getRandomResult = () => mockResults[Math.floor(Math.random() * mockResults.length)];
 
 const Scan = () => {
   const [state, setState] = useState<ScanState>("idle");
@@ -24,6 +90,7 @@ const Scan = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
+  const [currentResult, setCurrentResult] = useState(getRandomResult);
 
   const startCamera = useCallback(async () => {
     try {
@@ -91,7 +158,7 @@ const Scan = () => {
           {state === "camera" && <CameraView videoRef={videoRef} onClose={() => { stopCamera(); setState("idle"); }} onToggle={toggleCamera} onCapture={capturePhoto} />}
           {state === "scanning" && <LaserScanOverlay capturedImage={capturedImage} />}
           {state === "analyzing" && <AnalyzingView />}
-          {state === "done" && <DoneView result={mockResult} onReset={() => { setCapturedImage(null); setState("idle"); }} />}
+          {state === "done" && <DoneView result={currentResult} onReset={() => { setCapturedImage(null); setCurrentResult(getRandomResult()); setState("idle"); }} />}
         </AnimatePresence>
       </div>
 
@@ -151,7 +218,7 @@ const AnalyzingView = () => (
   </motion.div>
 );
 
-const DoneView = ({ result, onReset }: { result: typeof mockResult; onReset: () => void }) => (
+const DoneView = ({ result, onReset }: { result: typeof mockResults[number]; onReset: () => void }) => (
   <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
     <div className="flex items-center gap-2">
       <CheckCircle className="text-primary" size={20} />
