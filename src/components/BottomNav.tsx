@@ -1,10 +1,11 @@
-import { Home, ScanLine, PiggyBank, User } from "lucide-react";
+import { Home, ScanLine, PiggyBank, User, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const tabs = [
   { path: "/dashboard", icon: Home, label: "Home" },
   { path: "/scan", icon: ScanLine, label: "Scan" },
+  { path: "/chat", icon: MessageCircle, label: "Chat" },
   { path: "/wallet", icon: PiggyBank, label: "Alcancía" },
   { path: "/profile", icon: User, label: "Perfil" },
 ];
